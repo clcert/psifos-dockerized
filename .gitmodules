@@ -1,0 +1,6 @@
+[submodule "psifos-backend-op"]
+	path = psifos-backend-op
+	url = git@github.com:clcert/psifos-backend-op.git
+[submodule "psifos-frontend"]
+	path = psifos-frontend
+	url = git@github.com:clcert/psifos-frontend.git

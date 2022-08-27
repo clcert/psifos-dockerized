@@ -1,0 +1,26 @@
+version: "3"
+   
+services:
+
+      
+  frontend-dev:
+    build: 
+      context: ./psifos-frontend
+      dockerfile: Dockerfile.dev
+    command: npm start 
+    volumes: 
+      - ./psifos-frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    stdin_open: true
+
+
+  back-op-dev:
+      build: 
+        context: ./psifos-backend-op
+        dockerfile: Dockerfile.dev
+      expose:
+          - "80"
+
+
