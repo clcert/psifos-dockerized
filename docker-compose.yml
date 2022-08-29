@@ -2,11 +2,21 @@ version: "3"
    
 services:
 
+
+  mdb:
+      image: mariadb
+      command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+      restart: always
+      environment:
+          - MYSQL_ROOT_PASSWORD=mariadb
       
   frontend-dev:
     build: 
       context: ./psifos-frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.dev 
+    environment:
+      - WATCHPACK_POLLING=true
+
     command: npm start 
     volumes: 
       - ./psifos-frontend:/app
@@ -20,7 +30,16 @@ services:
       build: 
         context: ./psifos-backend-op
         dockerfile: Dockerfile.dev
-      expose:
-          - "80"
 
+      environment:
+        - USER=root
+        - PASSWORD=backend
+        - NAME_DATABASE=backedn
+        - HOST=backedn
+        - TYPE_AUTH=cas
 
+      ports:
+        - "8000:8000"
+
+      depends_on:
+        - mdb
