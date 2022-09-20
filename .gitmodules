@@ -4,3 +4,6 @@
 [submodule "psifos-frontend"]
 	path = psifos-frontend
 	url = git@github.com:clcert/psifos-frontend.git
+[submodule "psifos-backend-info"]
+	path = psifos-backend-info
+	url = git@github.com:clcert/psifos-backend-info.git
