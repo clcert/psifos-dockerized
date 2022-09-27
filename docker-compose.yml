@@ -62,8 +62,7 @@ services:
     container_name: celery_worker
     build:
       context: ./psifos-backend-op
-      dockerfile: Dockerfile.dev
-    command: celery -A app.celery_worker.celery worker --loglevel=info
+      dockerfile: ./app/celery_worker/Dockerfile.dev
     volumes:
       - ./psifos-backend-op:/app
     environment:
@@ -71,10 +70,6 @@ services:
       - DATABASE_PASS=${DATABASE_PASS}
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_HOST=${DATABASE_HOST}
-      - TYPE_AUTH=${TYPE_AUTH}
-      - APP_FRONTEND_URL=${APP_FRONTEND_URL}
-      - APP_BACKEND_URL=${APP_BACKEND_URL}
-      - SECRET_KEY=${SECRET_KEY}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     depends_on:
