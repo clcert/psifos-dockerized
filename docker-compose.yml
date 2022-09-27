@@ -54,6 +54,24 @@ services:
     depends_on:
       - mdb
 
+  back-info-dev:
+    container_name: back-info-dev
+    build:
+      context: ./psifos-backend-info
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./psifos-backend-info:/app
+    environment:
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+     
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mdb
+
   redis:
     container_name: redis
     image: redis:7.0-alpine
