@@ -69,7 +69,7 @@ services:
       - DATABASE_HOST=${DATABASE_HOST}
      
     ports:
-      - "5000:5000"
+      - "8001:8001"
     depends_on:
       - mdb
 
@@ -99,8 +99,10 @@ services:
     container_name: flower
     build:
       context: ./psifos-backend-op
-      dockerfile: Dockerfile.dev
+      dockerfile: ./app/celery_worker/Dockerfile.dev
     command: celery -A app.celery_worker.celery flower --port=5555
+    volumes:
+      - ./psifos-backend-op:/app
     ports:
       - 5556:5555
     environment:
