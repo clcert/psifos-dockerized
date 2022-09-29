@@ -81,9 +81,9 @@ services:
     container_name: celery_worker
     build:
       context: ./psifos-backend-op
-      dockerfile: ./app/celery_worker/Dockerfile.dev
-    volumes:
-      - ./psifos-backend-op:/app
+      dockerfile: ./app/celery_worker/Dockerfile.prod
+    # volumes:
+    #   - ./psifos-backend-op:/app
     environment:
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
@@ -99,10 +99,10 @@ services:
     container_name: flower
     build:
       context: ./psifos-backend-op
-      dockerfile: ./app/celery_worker/Dockerfile.dev
+      dockerfile: ./app/celery_worker/Dockerfile.prod
     command: celery -A app.celery_worker.celery flower --port=5555
-    volumes:
-      - ./psifos-backend-op:/app
+    # volumes:
+    #   - ./psifos-backend-op:/app
     ports:
       - 5556:5555
     environment:
