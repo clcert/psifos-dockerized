@@ -1,0 +1,119 @@
+version: '3'
+services:
+    frontend:
+        build: 
+          context: ./psifos-frontend
+          dockerfile: Dockerfile.prod
+          args:
+              - APP_BACKEND_HOST=https:\/\/back.psifos.labs.clcert.cl
+              - APP_FRONTEND_HOST=https:\/\/psifos.labs.clcert.cl        
+        volumes:
+            - ./psifos-frontend/Caddyfile:/etc/caddy/Caddyfile
+        labels:
+            caddy: "psifos.labs.clcert.cl"
+            caddy.reverse_proxy: "{{ upstreams 80 }}"
+        networks:
+          - caddy
+
+    back-op:
+        build: 
+          context: ./psifos-backend-op
+          dockerfile: Dockerfile.prod
+        environment:
+            - DATABASE_USER=psifos_dbuser
+            - DATABASE_PASS=yFjnL7WIrNmqQYOnZIIkIPxMmVSXze
+            - DATABASE_NAME=psifos_dev
+            - DATABASE_HOST=dbs_mdb_1:3306
+            - APP_FRONTEND_URL=https://psifos.labs.clcert.cl
+            - APP_BACKEND_URL=https://back.psifos.labs.clcert.cl
+            - TYPE_AUTH=oauth
+            - SECRET_KEY=Th1s1ss3cr3t
+            - OAUTH_TOKEN_URL=https://cas.labs.clcert.cl/oauth/token/
+            - OAUTH_AUTHORIZE_URL=https://cas.labs.clcert.cl/oauth/authorize/
+            - OAUTH_CLIENT_ID=Vro0Bd2MoRKEg4Lxn9mc8bySKlMAlbgObf2UeXuY
+            - OAUTH_CLIENT_SECRET=pWegIkGmtVIdfqIsBo3lwuKiAygusL1NbpzT7nzyN6ArfVfEhwglpkD753VzfslAlXQ3vEMYJysUKjxsdsmPlELBnkfA560MhX9lwMyKW3ZKgUNebRQHF5NIu91U2qK6
+            - OAUTH_USER_INFO_URL=https://cas.labs.clcert.cl/api/me
+            - CELERY_BROKER_URL=redis://redis:6379/0
+            - CELERY_RESULT_BACKEND=redis://redis:6379/0
+        expose:
+            - "80"
+        networks:
+          - caddy
+          - psifos-network
+
+    back-op-proxy:
+        image: caddy:alpine
+        restart: always
+        depends_on:
+            - back-op
+        volumes:
+            - ./psifos-backend-op/Caddyfile:/etc/caddy/Caddyfile
+            - caddy_config:/config
+            - caddy_data:/data
+        labels:
+            caddy: "back.psifos.labs.clcert.cl"
+            caddy.reverse_proxy: "{{ upstreams 80 }}"
+        networks:
+            - caddy
+            - psifos-network
+
+    redis:
+     container_name: redis
+     image: redis:7.0-alpine
+     networks:
+       - psifos-network
+
+    celery_worker:
+      container_name: celery_worker
+      build:
+        context: ./psifos-backend-op
+        dockerfile: Dockerfile.prod
+      command: celery -A app.celery_worker.celery worker --loglevel=info
+      networks:
+        - caddy
+        - psifos-network
+      volumes:
+        - ./psifos-backend-op:/app
+      expose:
+        - "80"
+      environment:
+        - DATABASE_USER=psifos_dbuser
+        - DATABASE_PASS=yFjnL7WIrNmqQYOnZIIkIPxMmVSXze
+        - DATABASE_HOST=dbs_mdb_1:3306
+        - DATABASE_NAME=psifos_dev
+        - TYPE_AUTH=oauth
+        - APP_FRONTEND_URL=https://psifos.labs.clcert.cl
+        - APP_BACKEND_URL=https://back.psifos.labs.clcert.cl
+        - SECRET_KEY=Th1s1ss3cr3t
+        - CELERY_BROKER_URL=redis://redis:6379/0
+        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      depends_on:
+        - back-op
+        - redis
+
+    flower:
+      container_name: flower
+      build:
+        context: ./psifos-backend-op
+        dockerfile: Dockerfile.dev
+      command: celery -A app.celery_worker.celery flower --port=5555
+      networks:
+        - psifos-network
+      ports:
+        - 5556:5555
+      environment:
+        - CELERY_BROKER_URL=redis://redis:6379/0
+        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      depends_on:
+        - back-op
+        - redis
+        - celery_worker
+
+networks:
+    caddy:
+        external: true
+    psifos-network:
+
+volumes:
+    caddy_config:
+    caddy_data:
