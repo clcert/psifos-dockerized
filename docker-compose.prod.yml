@@ -5,8 +5,9 @@ services:
           context: ./psifos-frontend
           dockerfile: Dockerfile.prod
           args:
-              - APP_BACKEND_HOST=https:\/\/back.psifos.labs.clcert.cl
-              - APP_FRONTEND_HOST=https:\/\/psifos.labs.clcert.cl        
+             - APP_FRONTEND_URL=https:\/\/psifos.labs.clcert.cl\/psifos                                                    
+             - APP_BACKEND_OP_URL=https:\/\/back.psifos.labs.clcert.cl\/psifos\/api\/app                                                   
+             - APP_BACKEND_INFO_URL=https:\/\/back.psifos.labs.clcert.cl\/psifos\/api\/public
         volumes:
             - ./psifos-frontend/Caddyfile:/etc/caddy/Caddyfile
         labels:
