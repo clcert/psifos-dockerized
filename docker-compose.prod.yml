@@ -20,21 +20,23 @@ services:
           context: ./psifos-backend-op
           dockerfile: Dockerfile.prod
         environment:
-            - DATABASE_USER=psifos_dbuser
-            - DATABASE_PASS=yFjnL7WIrNmqQYOnZIIkIPxMmVSXze
-            - DATABASE_NAME=psifos_dev
-            - DATABASE_HOST=dbs_mdb_1:3306
-            - APP_FRONTEND_URL=https://psifos.labs.clcert.cl
-            - APP_BACKEND_URL=https://back.psifos.labs.clcert.cl
-            - TYPE_AUTH=oauth
-            - SECRET_KEY=Th1s1ss3cr3t
-            - OAUTH_TOKEN_URL=https://cas.labs.clcert.cl/oauth/token/
-            - OAUTH_AUTHORIZE_URL=https://cas.labs.clcert.cl/oauth/authorize/
-            - OAUTH_CLIENT_ID=Vro0Bd2MoRKEg4Lxn9mc8bySKlMAlbgObf2UeXuY
-            - OAUTH_CLIENT_SECRET=pWegIkGmtVIdfqIsBo3lwuKiAygusL1NbpzT7nzyN6ArfVfEhwglpkD753VzfslAlXQ3vEMYJysUKjxsdsmPlELBnkfA560MhX9lwMyKW3ZKgUNebRQHF5NIu91U2qK6
-            - OAUTH_USER_INFO_URL=https://cas.labs.clcert.cl/api/me
-            - CELERY_BROKER_URL=redis://redis:6379/0
-            - CELERY_RESULT_BACKEND=redis://redis:6379/0
+              - DATABASE_USER=${DATABASE_USER}
+              - DATABASE_PASS=${DATABASE_PASS}
+              - DATABASE_NAME=${DATABASE_NAME}
+              - DATABASE_HOST=${DATABASE_HOST}
+              - TYPE_AUTH=${TYPE_AUTH}
+              - APP_FRONTEND_URL=${APP_FRONTEND_URL}
+              - APP_BACKEND_OP_URL=${APP_BACKEND_OP_URL}
+              - APP_BACKEND_INFO_URL=${APP_BACKEND_INFO_URL}
+              - CAS_URL=${CAS_URL}
+              - SECRET_KEY=${SECRET_KEY}
+              - OAUTH_TOKEN_URL=${OAUTH_TOKEN_URL}
+              - OAUTH_AUTHORIZE_URL=${OAUTH_AUTHORIZE_URL}
+              - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+              - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
+              - OAUTH_USER_INFO_URL=${OAUTH_USER_INFO_URL}
+              - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+              - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
         expose:
             - "80"
         networks:
@@ -77,16 +79,12 @@ services:
       expose:
         - "80"
       environment:
-        - DATABASE_USER=psifos_dbuser
-        - DATABASE_PASS=yFjnL7WIrNmqQYOnZIIkIPxMmVSXze
-        - DATABASE_HOST=dbs_mdb_1:3306
-        - DATABASE_NAME=psifos_dev
-        - TYPE_AUTH=oauth
-        - APP_FRONTEND_URL=https://psifos.labs.clcert.cl
-        - APP_BACKEND_URL=https://back.psifos.labs.clcert.cl
-        - SECRET_KEY=Th1s1ss3cr3t
-        - CELERY_BROKER_URL=redis://redis:6379/0
-        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+        - DATABASE_USER=${DATABASE_USER}
+        - DATABASE_PASS=${DATABASE_PASS}
+        - DATABASE_NAME=${DATABASE_NAME}
+        - DATABASE_HOST=${DATABASE_HOST}
+        - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+        - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
       depends_on:
         - back-op
         - redis
@@ -95,15 +93,17 @@ services:
       container_name: flower
       build:
         context: ./psifos-backend-op
-        dockerfile: Dockerfile.dev
+        dockerfile: ./app/celery_worker/Dockerfile.dev
       command: celery -A app.celery_worker.celery flower --port=5555
+      volumes:
+        - ./psifos-backend-op:/app
       networks:
         - psifos-network
       ports:
         - 5556:5555
       environment:
-        - CELERY_BROKER_URL=redis://redis:6379/0
-        - CELERY_RESULT_BACKEND=redis://redis:6379/0
+        - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+        - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
       depends_on:
         - back-op
         - redis
