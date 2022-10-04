@@ -17,6 +17,31 @@ To run the application you must run: `docker-compose -f [yml file] up -d --build
 
 To stop the application you must run: `docker-compose -f [yml file] stop`
 
-
 The app works with a Caddy web server
+
+### Environment Variables
+
+The application has environment variables for its operation. These must go in an .env located in the `psifos-dockerized` directory
+
+| Variable  | Description  |
+|-----------|--------------|
+| DATABASE_USER | Database admin user |
+| DATABASE_PASS | Database user password |
+| DATABASE_HOST    | Database container id |
+| DATABASE_NAME  | Name of the database on which to work |
+| SECRET_KEY  | A secret phrase that will perform hash |
+| APP_FRONTEND_URL  | URL where the frontend will be hosted |
+| APP_BACKEND_OP_URL  | URL where the back-op will be hosted |
+| APP_BACKEND_INFO_URL  | URL where the back-info will be hosted |
+| TYPE_AUTH  | Authentication type (cas or oauth) |
+| CAS_URL  | Authentication server URL |
+| OAUTH_TOKEN_URL  | Oauth2 token url |
+| OAUTH_AUTHORIZE_URL  | Oauth2 Authorize URL |
+| OAUTH_CLIENT_ID  | Oauth2 client id |
+| OAUTH_CLIENT_SECRET  | Oauth2 client secret |
+| OAUTH_USER_INFO_URL  | Oauth2 url for info user |
+| CELERY_BROKER_URL  | Celery broker container id |
+| CELERY_RESULT_BACKEND  | Celery result  container id |
+
+
 
