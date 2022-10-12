@@ -33,6 +33,7 @@ services:
     volumes:
       - ./psifos-backend-op:/app
     environment:
+      - USE_ASYNC_ENGINE=${USE_ASYNC_ENGINE}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - DATABASE_NAME=${DATABASE_NAME}
