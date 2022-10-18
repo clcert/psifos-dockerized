@@ -8,7 +8,6 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - WATCHPACK_POLLING=true
-
     command: npm start
     volumes:
       - ./psifos-frontend:/app
@@ -23,7 +22,10 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=${DATABASE_PASS}
+      - MARIADB_ROOT_PASSWORD=${DATABASE_PASS}
+      - MARIADB_DATABASE=${DATABASE_NAME}
+      - MARIADB_USER=${DATABASE_USER}
+      - MARIADB_PASSWORD=${DATABASE_PASS}
     
   back-op-dev:
     container_name: back-op-dev
@@ -53,6 +55,7 @@ services:
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     ports:
       - "8000:8000"
+    restart: always
     depends_on:
       - mdb
 
@@ -67,10 +70,10 @@ services:
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_HOST=${DATABASE_HOST}
-     
+      - DATABASE_HOST=${DATABASE_HOST}     
     ports:
       - "8001:8001"
+    restart: always
     depends_on:
       - mdb
 
