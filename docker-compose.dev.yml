@@ -53,6 +53,7 @@ services:
       - OAUTH_USER_INFO_URL=${OAUTH_USER_INFO_URL}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - TIMEZONE=${TIMEZONE}
     ports:
       - "8000:8000"
     restart: always
