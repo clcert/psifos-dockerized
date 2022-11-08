@@ -26,6 +26,8 @@ services:
       - MARIADB_DATABASE=${DATABASE_NAME}
       - MARIADB_USER=${DATABASE_USER}
       - MARIADB_PASSWORD=${DATABASE_PASS}
+    ports:
+      - "3306:3306"
     
   back-op-dev:
     container_name: back-op-dev
