@@ -46,6 +46,7 @@ services:
       - APP_FRONTEND_URL=${APP_FRONTEND_URL}
       - APP_BACKEND_OP_URL=${APP_BACKEND_OP_URL}
       - APP_BACKEND_INFO_URL=${APP_BACKEND_INFO_URL}
+      - APP_MIXNET_URL=${APP_MIXNET_URL}
       - CAS_URL=${CAS_URL}
       - SECRET_KEY=${SECRET_KEY}
       - OAUTH_TOKEN_URL=${OAUTH_TOKEN_URL}
@@ -76,6 +77,8 @@ services:
       - DATABASE_HOST=${DATABASE_HOST}
       - USE_ASYNC_ENGINE=${USE_ASYNC_ENGINE}
       - SECRET_KEY=${SECRET_KEY}
+      - TIMEZONE=${TIMEZONE}
+
     ports:
       - "8001:8001"
     restart: always
@@ -100,6 +103,7 @@ services:
       - DATABASE_HOST=${DATABASE_HOST}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - APP_MIXNET_URL=${APP_MIXNET_URL}
     depends_on:
       - back-op-dev
       - redis
