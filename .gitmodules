@@ -7,3 +7,6 @@
 [submodule "psifos-backend-info"]
 	path = psifos-backend-info
 	url = git@github.com:clcert/psifos-backend-info.git
+[submodule "vmn-docker"]
+	path = vmn-docker
+	url = git@github.com:clcert/vmn-docker.git
