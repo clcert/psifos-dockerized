@@ -46,7 +46,6 @@ services:
       - APP_FRONTEND_URL=${APP_FRONTEND_URL}
       - APP_BACKEND_OP_URL=${APP_BACKEND_OP_URL}
       - APP_BACKEND_INFO_URL=${APP_BACKEND_INFO_URL}
-      - APP_MIXNET_URL=${APP_MIXNET_URL}
       - CAS_URL=${CAS_URL}
       - SECRET_KEY=${SECRET_KEY}
       - OAUTH_TOKEN_URL=${OAUTH_TOKEN_URL}
@@ -103,7 +102,15 @@ services:
       - DATABASE_HOST=${DATABASE_HOST}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - APP_MIXNET_URL=${APP_MIXNET_URL}
+      - MIXNET_01_NAME=${MIXNET_01_NAME}
+      - MIXNET_01_URL=${MIXNET_01_URL}
+      - MIXNET_02_NAME=${MIXNET_02_NAME}
+      - MIXNET_02_URL=${MIXNET_02_URL}
+      - MIXNET_03_NAME=${MIXNET_03_NAME}
+      - MIXNET_03_URL=${MIXNET_03_URL}
+      - MIXNET_TOKEN=${MIXNET_TOKEN}
+      - MIXNET_WIDTH=${MIXNET_WIDTH}
+      - MIXNET_WAIT_INTERVAL=${"MIXNET_WAIT_INTERVAL}
     depends_on:
       - back-op-dev
       - redis
@@ -125,3 +132,43 @@ services:
       - back-op-dev
       - redis
       - celery_worker
+
+
+  vmn-01:
+    container_name: mixserver01
+    build:
+      context: ./vmn-docker
+      dockerfile: Dockerfile.dev
+    environment:
+      - SERVER_NAME=${MIXNET_01_NAME}
+      - MIXNET_WIDTH=${MIXNET_WIDTH}
+    ports:
+      - "8002:8000"
+      - "8040"
+      - "4040"
+
+  vmn-02:
+    container_name: mixserver02
+    build:
+      context: ./vmn-docker
+      dockerfile: Dockerfile.dev
+    environment:
+      - SERVER_NAME=${MIXNET_02_NAME}
+      - MIXNET_WIDTH=${MIXNET_WIDTH}
+    ports:
+      - "8003:8000"
+      - "8040"
+      - "4040"
+
+  vmn-03:
+    container_name: mixserver03
+    build:
+      context: ./vmn-docker
+      dockerfile: Dockerfile.dev
+    environment:
+      - SERVER_NAME=${MIXNET_03_NAME}
+      - MIXNET_WIDTH=${MIXNET_WIDTH}
+    ports:
+      - "8004:8000"
+      - "8040"
+      - "4040"
