@@ -110,7 +110,7 @@ services:
       - MIXNET_03_URL=${MIXNET_03_URL}
       - MIXNET_TOKEN=${MIXNET_TOKEN}
       - MIXNET_WIDTH=${MIXNET_WIDTH}
-      - MIXNET_WAIT_INTERVAL=${"MIXNET_WAIT_INTERVAL}
+      - MIXNET_WAIT_INTERVAL=${MIXNET_WAIT_INTERVAL}
     depends_on:
       - back-op-dev
       - redis
@@ -142,6 +142,7 @@ services:
     environment:
       - SERVER_NAME=${MIXNET_01_NAME}
       - MIXNET_WIDTH=${MIXNET_WIDTH}
+      - MIXNET_NUM_SERVERS=${MIXNET_NUM_SERVERS}
     ports:
       - "8002:8000"
       - "8040"
@@ -155,6 +156,7 @@ services:
     environment:
       - SERVER_NAME=${MIXNET_02_NAME}
       - MIXNET_WIDTH=${MIXNET_WIDTH}
+      - MIXNET_NUM_SERVERS=${MIXNET_NUM_SERVERS}
     ports:
       - "8003:8000"
       - "8040"
@@ -168,6 +170,7 @@ services:
     environment:
       - SERVER_NAME=${MIXNET_03_NAME}
       - MIXNET_WIDTH=${MIXNET_WIDTH}
+      - MIXNET_NUM_SERVERS=${MIXNET_NUM_SERVERS}
     ports:
       - "8004:8000"
       - "8040"
