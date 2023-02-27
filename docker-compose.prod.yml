@@ -1,160 +1,169 @@
-version: '3'
+version: "3"
 services:
-    frontend:
-        build: 
-          context: ./psifos-frontend
-          dockerfile: Dockerfile.prod
-          args:
-             - APP_FRONTEND_URL=https:\/\/psifos.labs.clcert.cl\/psifos                                                    
-             - APP_BACKEND_OP_URL=https:\/\/psifos.labs.clcert.cl\/psifos\/api\/app        
-             - APP_BACKEND_INFO_URL=https:\/\/psifos.labs.clcert.cl\/psifos\/api\/public
-        volumes:
-            - ./psifos-frontend/Caddyfile:/etc/caddy/Caddyfile
-        depends_on:
-            - back-op
-            - back-info
-        labels:
-            caddy: psifos.labs.clcert.cl
-            caddy.reverse_proxy: "{{ upstreams 80 }}"
-            caddy.handle_path_0: /psifos/api/app/*
-            caddy.handle_path_0.0_rewrite: "* {uri}"
-            caddy.handle_path_0.1_reverse_proxy: back-op
-            caddy.handle_path_1: /psifos/api/public/*
-            caddy.handle_path_1.0_rewrite: "* {uri}"
-            caddy.handle_path_1.1_reverse_proxy: back-info
-        networks:
-          - caddy
-          - psifos-network
+  frontend:
+    build:
+      context: ./psifos-frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - APP_FRONTEND_URL=https:\/\/psifos.labs.clcert.cl\/psifos
+        - APP_BACKEND_OP_URL=https:\/\/psifos.labs.clcert.cl\/psifos\/api\/app
+        - APP_BACKEND_INFO_URL=https:\/\/psifos.labs.clcert.cl\/psifos\/api\/public
+    volumes:
+      - ./psifos-frontend/Caddyfile:/etc/caddy/Caddyfile
+    depends_on:
+      - back-op
+      - back-info
+    labels:
+      caddy: psifos.labs.clcert.cl
+      caddy.reverse_proxy: "{{ upstreams 80 }}"
+      caddy.handle_path_0: /psifos/api/app/*
+      caddy.handle_path_0.0_rewrite: "* {uri}"
+      caddy.handle_path_0.1_reverse_proxy: back-op
+      caddy.handle_path_1: /psifos/api/public/*
+      caddy.handle_path_1.0_rewrite: "* {uri}"
+      caddy.handle_path_1.1_reverse_proxy: back-info
+    networks:
+      - caddy
+      - psifos-network
 
-    back-op:
-        build: 
-          context: ./psifos-backend-op
-          dockerfile: Dockerfile.prod
-        environment:
-              - DATABASE_USER=${DATABASE_USER}
-              - DATABASE_PASS=${DATABASE_PASS}
-              - DATABASE_NAME=${DATABASE_NAME}
-              - DATABASE_HOST=${DATABASE_HOST}
-              - TYPE_AUTH=${TYPE_AUTH}
-              - APP_FRONTEND_URL=${APP_FRONTEND_URL}
-              - APP_BACKEND_OP_URL=${APP_BACKEND_OP_URL}
-              - APP_BACKEND_INFO_URL=${APP_BACKEND_INFO_URL}
-              - CAS_URL=${CAS_URL}
-              - SECRET_KEY=${SECRET_KEY}
-              - OAUTH_TOKEN_URL=${OAUTH_TOKEN_URL}
-              - OAUTH_AUTHORIZE_URL=${OAUTH_AUTHORIZE_URL}
-              - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
-              - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
-              - OAUTH_USER_INFO_URL=${OAUTH_USER_INFO_URL}
-              - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-              - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-        expose:
-            - "80"
-        networks:
-          - caddy
-          - psifos-network
+  back-op:
+    build:
+      context: ./psifos-backend-op
+      dockerfile: Dockerfile.prod
+    environment:
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - TYPE_AUTH=${TYPE_AUTH}
+      - APP_FRONTEND_URL=${APP_FRONTEND_URL}
+      - APP_BACKEND_OP_URL=${APP_BACKEND_OP_URL}
+      - APP_BACKEND_INFO_URL=${APP_BACKEND_INFO_URL}
+      - CAS_URL=${CAS_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - OAUTH_TOKEN_URL=${OAUTH_TOKEN_URL}
+      - OAUTH_AUTHORIZE_URL=${OAUTH_AUTHORIZE_URL}
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
+      - OAUTH_USER_INFO_URL=${OAUTH_USER_INFO_URL}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    expose:
+      - "80"
+    networks:
+      - caddy
+      - psifos-network
 
-    back-info:
-        build:
-          context: ./psifos-backend-info
-          dockerfile: Dockerfile.prod
-        environment:
-          - DATABASE_USER=${DATABASE_USER}
-          - DATABASE_PASS=${DATABASE_PASS}
-          - DATABASE_NAME=${DATABASE_NAME}
-          - DATABASE_HOST=${DATABASE_HOST}
-        expose:
-            - "80"
-        networks:
-          - caddy
-          - psifos-network
+  back-info:
+    build:
+      context: ./psifos-backend-info
+      dockerfile: Dockerfile.prod
+    environment:
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+    expose:
+      - "80"
+    networks:
+      - caddy
+      - psifos-network
 
-    back-op-proxy:
-        image: caddy:alpine
-        restart: always
-        depends_on:
-            - back-op
-        volumes:
-            - ./psifos-backend-op/Caddyfile:/etc/caddy/Caddyfile
-            - caddy_config:/config
-            - caddy_data:/data
-        labels:
-            caddy: "back.psifos.labs.clcert.cl"
-            caddy.reverse_proxy: "{{ upstreams 80 }}"
-        networks:
-            - caddy
-            - psifos-network
+  back-op-proxy:
+    image: caddy:alpine
+    restart: always
+    depends_on:
+      - back-op
+    volumes:
+      - ./psifos-backend-op/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_config:/config
+      - caddy_data:/data
+    labels:
+      caddy: "back.psifos.labs.clcert.cl"
+      caddy.reverse_proxy: "{{ upstreams 80 }}"
+    networks:
+      - caddy
+      - psifos-network
 
-    back-info-proxy:
-        image: caddy:alpine
-        restart: always
-        depends_on:
-            - back-info
-        volumes:
-            - ./psifos-backend-info/Caddyfile:/etc/caddy/Caddyfile
-            - caddy_config:/config
-            - caddy_data:/data
-        labels:
-            caddy: "info.psifos.labs.clcert.cl"
-            caddy.reverse_proxy: "{{ upstreams 80 }}"
-        networks:
-            - caddy
-            - psifos-network
+  back-info-proxy:
+    image: caddy:alpine
+    restart: always
+    depends_on:
+      - back-info
+    volumes:
+      - ./psifos-backend-info/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_config:/config
+      - caddy_data:/data
+    labels:
+      caddy: "info.psifos.labs.clcert.cl"
+      caddy.reverse_proxy: "{{ upstreams 80 }}"
+    networks:
+      - caddy
+      - psifos-network
 
-    redis:
-     container_name: redis
-     image: redis:7.0-alpine
-     networks:
-       - psifos-network
+  redis:
+    container_name: redis
+    image: redis:7.0-alpine
+    networks:
+      - psifos-network
 
-    celery_worker:
-      container_name: celery_worker
-      build:
-        context: ./psifos-backend-op
-        dockerfile: ./app/celery_worker/Dockerfile.prod
-      networks:
-        - caddy
-        - psifos-network
-      volumes:
-        - ./psifos-backend-op:/app
-      expose:
-        - "80"
-      environment:
-        - DATABASE_USER=${DATABASE_USER}
-        - DATABASE_PASS=${DATABASE_PASS}
-        - DATABASE_NAME=${DATABASE_NAME}
-        - DATABASE_HOST=${DATABASE_HOST}
-        - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-        - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      depends_on:
-        - back-op
-        - redis
+  celery_worker:
+    container_name: celery_worker
+    build:
+      context: ./psifos-backend-op
+      dockerfile: ./app/celery_worker/Dockerfile.prod
+    networks:
+      - caddy
+      - psifos-network
+    volumes:
+      - ./psifos-backend-op:/app
+    expose:
+      - "80"
+    environment:
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      - MIXNET_01_NAME=${MIXNET_01_NAME}
+      - MIXNET_01_URL=${MIXNET_01_URL}
+      - MIXNET_02_NAME=${MIXNET_02_NAME}
+      - MIXNET_02_URL=${MIXNET_02_URL}
+      - MIXNET_03_NAME=${MIXNET_03_NAME}
+      - MIXNET_03_URL=${MIXNET_03_URL}
+      - MIXNET_TOKEN=${MIXNET_TOKEN}
+      - MIXNET_WIDTH=${MIXNET_WIDTH}
+      - MIXNET_WAIT_INTERVAL=${MIXNET_WAIT_INTERVAL}
+    depends_on:
+      - back-op
+      - redis
 
-    flower:
-      container_name: flower
-      build:
-        context: ./psifos-backend-op
-        dockerfile: ./app/celery_worker/Dockerfile.dev
-      command: celery -A app.celery_worker.celery flower --port=5555
-      volumes:
-        - ./psifos-backend-op:/app
-      networks:
-        - psifos-network
-      ports:
-        - 5556:5555
-      environment:
-        - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-        - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      depends_on:
-        - back-op
-        - redis
-        - celery_worker
+  flower:
+    container_name: flower
+    build:
+      context: ./psifos-backend-op
+      dockerfile: ./app/celery_worker/Dockerfile.dev
+    command: celery -A app.celery_worker.celery flower --port=5555
+    volumes:
+      - ./psifos-backend-op:/app
+    networks:
+      - psifos-network
+    ports:
+      - 5556:5555
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    depends_on:
+      - back-op
+      - redis
+      - celery_worker
 
 networks:
-    caddy:
-        external: true
-    psifos-network:
+  caddy:
+    external: true
+  psifos-network:
 
 volumes:
-    caddy_config:
-    caddy_data:
+  caddy_config:
+  caddy_data:
