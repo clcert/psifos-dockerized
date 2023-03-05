@@ -5,7 +5,7 @@ services:
       context: ./psifos-frontend
       dockerfile: Dockerfile.prod
       args:
-        - APP_FRONTEND_URL=https:\/\/psifos.labs.clcert.cl\/psifos
+        - APP_FRONTEND_URL=https:\/\/psifos.labs.clcert.cl\/
         - APP_BACKEND_OP_URL=https:\/\/psifos.labs.clcert.cl\/psifos\/api\/app
         - APP_BACKEND_INFO_URL=https:\/\/psifos.labs.clcert.cl\/psifos\/api\/public
     volumes:
