@@ -16,16 +16,16 @@ services:
       - "3000:3000"
     stdin_open: true
 
-  mdb:
-    container_name: mdb
-    image: mariadb
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+  mysql:
+    container_name: mysql
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      - MARIADB_ROOT_PASSWORD=${DATABASE_PASS}
-      - MARIADB_DATABASE=${DATABASE_NAME}
-      - MARIADB_USER=${DATABASE_USER}
-      - MARIADB_PASSWORD=${DATABASE_PASS}
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASS}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASS}
     ports:
       - "3306:3306"
     
@@ -58,9 +58,8 @@ services:
       - TIMEZONE=${TIMEZONE}
     ports:
       - "8000:8000"
-    restart: always
     depends_on:
-      - mdb
+      - mysql
 
   back-info-dev:
     container_name: back-info-dev
@@ -77,12 +76,10 @@ services:
       - USE_ASYNC_ENGINE=${USE_ASYNC_ENGINE}
       - SECRET_KEY=${SECRET_KEY}
       - TIMEZONE=${TIMEZONE}
-
     ports:
       - "8001:8001"
-    restart: always
     depends_on:
-      - mdb
+      - mysql
 
   redis:
     container_name: redis
@@ -132,7 +129,6 @@ services:
       - back-op-dev
       - redis
       - celery_worker
-
 
   vmn-01:
     container_name: mixserver01
