@@ -10,14 +10,21 @@ The repository has three submodules, `psifos-frontend`, `psifos-backend-op`, and
 
 The application has two modes, production and development. For this there are different docker-compose.yml files. Also, each submodule has Dockerfiles for production and development.
 
-* Production: `docker-compose-prod-yml` / `Dockerfile.prod`
-* Development: `docker-compose-dev-yml` / `Dockerfile.dev`
+* Production: `docker-compose.prod-yml` / `Dockerfile.prod`
+* Development: `docker-compose.dev-yml` / `Dockerfile.dev`
 
 To run the application you must run: `docker-compose -f [yml file] up -d --build`
 
 To stop the application you must run: `docker-compose -f [yml file] stop`
 
-The app works with a Caddy web server
+In development, you should run the first migration and create the admin user manually:
+```
+$ docker compose -f docker-compose.dev.yml exec back-op-dev alembic upgrade head
+$ docker compose -f docker-compose.dev.yml exec back-op-dev python create_debug_admin.py
+```
+Now, you can go to `http://localhost:3000/psifos` and enter with the following credentials:
+- user: `admin`
+- pass: `12345`
 
 ### Environment Variables
 
