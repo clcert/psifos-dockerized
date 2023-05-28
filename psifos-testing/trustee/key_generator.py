@@ -5,11 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from config import (
     NAME_ELECTION,
     TIMEOUT,
-    DOWNLOAD_PATH,
+    DIRECTORY_PATH,
     OPERATIVE_URL,
     TRUSTEE_NAME,
     TRUSTEE_PASSWORD,
-    TRUSTEE_EMAIL,
 )
 from services.election import get_election
 
@@ -59,7 +58,7 @@ def key_generator(driver):
         EC.presence_of_element_located((By.ID, "file-input"))
     )
     drop_zone.send_keys(
-        f"{DOWNLOAD_PATH}/trustee_key_{TRUSTEE_NAME}_{NAME_ELECTION}.txt"
+        f"{DIRECTORY_PATH}/trustee_key_{TRUSTEE_NAME}_{NAME_ELECTION}.txt"
     )
 
     time.sleep(20)

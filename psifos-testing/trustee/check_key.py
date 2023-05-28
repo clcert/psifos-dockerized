@@ -1,7 +1,7 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from config import OPERATIVE_URL, NAME_ELECTION, TIMEOUT, DOWNLOAD_PATH, TRUSTEE_NAME
+from config import OPERATIVE_URL, NAME_ELECTION, TIMEOUT, DIRECTORY_PATH, TRUSTEE_NAME
 
 
 def check_key(element):
@@ -24,7 +24,7 @@ def check_sk(driver):
         EC.presence_of_element_located((By.ID, "file-input"))
     )
     drop_zone.send_keys(
-        f"{DOWNLOAD_PATH}/trustee_key_{TRUSTEE_NAME}_{NAME_ELECTION}.txt"
+        f"{DIRECTORY_PATH}/trustee_key_{TRUSTEE_NAME}_{NAME_ELECTION}.txt"
     )
 
     # Esperamos a que el proceso se complete

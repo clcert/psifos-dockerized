@@ -21,6 +21,7 @@ TRUSTEE_EMAIL = os.environ.get("TRUSTEE_EMAIL")
 VOTER_NAME = os.environ.get("VOTER_NAME")
 VOTER_PASSWORD = os.environ.get("VOTER_PASSWORD")
 
-DOWNLOAD_PATH = os.environ.get("DOWNLOAD_PATH")
+DIRECTORY_PATH = os.environ.get("DIRECTORY_PATH")
+VOTERS_FILE_NAME = os.environ.get("VOTERS_FILE_NAME")
 
 TIMEOUT = os.environ.get("TIMEOUT")

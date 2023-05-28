@@ -1,5 +1,6 @@
 from admin.login import login_test
 from admin.create_election import create_election
+from admin.upload_voters import upload_voters
 from admin.create_question import create_question
 from admin.create_trustee import create_trustee
 from admin.close_election import close_election
@@ -7,7 +8,6 @@ from admin.compute_tally import compute_tally
 from admin.init_election import init_election
 from selenium import webdriver
 
-import traceback
 
 
 def admin_test(actual_step):
@@ -15,6 +15,7 @@ def admin_test(actual_step):
         "step_1": {
             "login_test": login_test,
             "create_election": create_election,
+            "upload_voters": upload_voters,
             "create_question": create_question,
             "create_trustee": create_trustee,
         },
