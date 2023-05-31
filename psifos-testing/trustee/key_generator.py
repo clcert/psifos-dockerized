@@ -9,6 +9,7 @@ from config import (
     OPERATIVE_URL,
     TRUSTEE_NAME,
     TRUSTEE_PASSWORD,
+    LOGIN_SITE
 )
 from services.election import get_election
 
@@ -28,17 +29,25 @@ def key_generator(driver):
     # Ir a la página web
     driver.get(f"{OPERATIVE_URL}/{NAME_ELECTION}/trustee/login")
 
+    if LOGIN_SITE == "clcert":
+        username_element_id = "id_username"
+        password_element_id = "id_password"
+    if LOGIN_SITE == "uchile":
+        username_element_id = "usernameInput"
+        password_element_id = "passwordInput"
+
     # Rellenamos el formulario del custodio
     trustee_name = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, "id_username"))
+        EC.presence_of_element_located((By.ID, username_element_id))
     )
     trustee_name.send_keys(TRUSTEE_NAME)
 
     trustee_password = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, "id_password"))
+        EC.presence_of_element_located((By.ID, password_element_id))
     )
     trustee_password.send_keys(TRUSTEE_PASSWORD)
     trustee_password.send_keys(Keys.ENTER)
+    
     # Accedemos a la etapa 1
     button_key_generator = WebDriverWait(driver, TIMEOUT).until(
         EC.presence_of_element_located((By.ID, "init-key-generator"))

@@ -25,3 +25,4 @@ DIRECTORY_PATH = os.environ.get("DIRECTORY_PATH")
 VOTERS_FILE_NAME = os.environ.get("VOTERS_FILE_NAME")
 
 TIMEOUT = os.environ.get("TIMEOUT")
+LOGIN_SITE = os.environ.get("LOGIN_SITE")
