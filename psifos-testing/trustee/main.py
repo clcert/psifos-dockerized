@@ -3,6 +3,7 @@ from trustee.check_key import check_sk
 from trustee.decrypt import decrypt
 from trustee.login_trustee import login_trustee
 from selenium import webdriver
+from config import DIRECTORY_PATH
 
 import traceback
 
@@ -16,16 +17,13 @@ def trustee_test(actual_step):
         "step_2": {"login_trustee": login_trustee, "decrypt": decrypt},
     }
 
-    options = webdriver.FirefoxOptions()
+    options = webdriver.ChromeOptions()
     options.add_argument("--private")
-    options.set_preference("browser.download.folderList", 2)
-    options.set_preference("browser.download.dir", "ruta_de_la_carpeta")
-    options.set_preference(
-        "browser.helperApps.neverAsk.saveToDisk", "application/octet-stream"
-    )
+    options.add_argument(f"--download.default_directory={DIRECTORY_PATH}")
+    options.add_argument("--download.prompt_for_download=False")
 
     # Abrimos el navegador
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Chrome(options=options)
 
     step = steps[actual_step]
 

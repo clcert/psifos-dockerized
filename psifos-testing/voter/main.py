@@ -11,11 +11,11 @@ def voter_test(actual_step):
         }
     }
 
-    options = webdriver.FirefoxOptions()
+    options = webdriver.ChromeOptions()
     options.add_argument("--private")
 
     # Abrimos el navegador
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Chrome(options=options)
 
     step = steps[actual_step]
 

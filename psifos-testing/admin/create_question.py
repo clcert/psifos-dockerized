@@ -62,6 +62,7 @@ def create_question(driver):
         EC.presence_of_element_located((By.ID, "button-save-questions"))
     )
     save_question.click()
+    time.sleep(1)
 
     # Esperamos a la pantalla de inicio
     WebDriverWait(driver, TIMEOUT).until(

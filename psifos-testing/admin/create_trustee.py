@@ -60,6 +60,7 @@ def create_trustee(driver):
         EC.presence_of_element_located((By.ID, "send-trustee"))
     )
     send_trustee.click()
+    time.sleep(1)
 
     # Esperamos a la pantalla de inicio
     WebDriverWait(driver, TIMEOUT).until(

@@ -62,6 +62,7 @@ def create_election(driver):
         EC.presence_of_element_located((By.ID, "button-send-election"))
     )
     button_send.click()
+    time.sleep(1)
 
     # Esperamos a la pantalla de inicio
     WebDriverWait(driver, TIMEOUT).until(
