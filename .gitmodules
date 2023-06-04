@@ -10,3 +10,6 @@
 [submodule "vmn-docker"]
 	path = vmn-docker
 	url = git@github.com:clcert/vmn-docker.git
+[submodule "psifos-testing"]
+	path = psifos-testing
+	url = git@github.com:clcert/psifos-testing.git
