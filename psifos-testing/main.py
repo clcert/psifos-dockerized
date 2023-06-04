@@ -8,6 +8,9 @@ import sys
 
 def execute_test():
     try:
+        # Al terminar eliminamos la elección
+        clear_test()
+
         # Ejecutamos los test step_1 del administrador
         admin_test("step_1")
 

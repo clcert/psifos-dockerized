@@ -1,7 +1,23 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from config import NAME_ELECTION, TIMEOUT, DIRECTORY_PATH, TRUSTEE_NAME
+from selenium import webdriver
+from trustee.login_trustee import login_trustee
+from utils import get_driver_options
+
+from config import (
+    NAME_ELECTION,
+    TIMEOUT,
+    DIRECTORY_PATH,
+    TRUSTEE_NAME_1,
+    TRUSTEE_PASSWORD_1,
+    TRUSTEE_NAME_2,
+    TRUSTEE_PASSWORD_2,
+    TRUSTEE_NAME_3,
+    TRUSTEE_PASSWORD_3,
+)
+
+import time
 
 
 def check_decrypt(element):
@@ -9,7 +25,14 @@ def check_decrypt(element):
         raise Exception("Las desencriptaciones no han sido calculados")
 
 
-def decrypt(driver):
+def trustee_decrypt(trustee_name, trustee_password):
+    options = get_driver_options()
+    
+    # Abrimos el navegador
+    driver = webdriver.Chrome(options=options)
+
+    login_trustee(driver, trustee_name, trustee_password)
+
     # Accedemos a la etapa 3
     button_decrypt = WebDriverWait(driver, TIMEOUT).until(
         EC.presence_of_element_located((By.ID, "upload-key"))
@@ -21,7 +44,7 @@ def decrypt(driver):
         EC.presence_of_element_located((By.ID, "file-input"))
     )
     drop_zone.send_keys(
-        f"{DIRECTORY_PATH}/trustee_key_{TRUSTEE_NAME}_{NAME_ELECTION}.txt"
+        f"{DIRECTORY_PATH}/trustee_key_{trustee_name}_{NAME_ELECTION}.txt"
     )
 
     # Esperamos a que el proceso se complete
@@ -30,3 +53,11 @@ def decrypt(driver):
     )
 
     check_decrypt(feedback)
+
+
+def decrypt():
+    trustee_decrypt(TRUSTEE_NAME_1, TRUSTEE_PASSWORD_1)
+    time.sleep(2)
+    trustee_decrypt(TRUSTEE_NAME_2, TRUSTEE_PASSWORD_2)
+    time.sleep(2)
+    trustee_decrypt(TRUSTEE_NAME_3, TRUSTEE_PASSWORD_3)

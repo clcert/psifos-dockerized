@@ -14,7 +14,7 @@ def trustee_test(actual_step):
             "key_generator": key_generator,
             "check_sk": check_sk,
         },
-        "step_2": {"login_trustee": login_trustee, "decrypt": decrypt},
+        "step_2": {"decrypt": decrypt},
     }
 
     options = webdriver.ChromeOptions()
@@ -22,22 +22,17 @@ def trustee_test(actual_step):
     options.add_argument(f"--download.default_directory={DIRECTORY_PATH}")
     options.add_argument("--download.prompt_for_download=False")
 
-    # Abrimos el navegador
-    driver = webdriver.Chrome(options=options)
-
     step = steps[actual_step]
 
     print("======TRUSTEE-TEST======")
     for index, (name, test) in enumerate(step.items()):
         try:
             print(f"\nEjecutando prueba {name} {index + 1}/{len(step)}")
-            test(driver)
+            test()
             print(f"Prueba {name} correcta ✓\n")
 
         except Exception as e:
             print(f"Ha ocurrido un error en la prueba {index + 1} x")
             print(e)
             traceback.print_exc()
-            driver.quit()
 
-    driver.quit()

@@ -19,16 +19,7 @@ def check_question():
         raise Exception("Las preguntas no han sido creadas")
 
 
-def create_question(driver):
-    # Ir a la página web
-    driver.get(f"{URL_ADMIN}/admin/{NAME_ELECTION}/panel")
-
-    # Accedemos a crear una elección
-    button_create_question = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, "button-add-questions"))
-    )
-    button_create_question.click()
-
+def add_question(driver, question_number, select_number=1, choices_number=3):
     # Completamos los formularios
     add_question = WebDriverWait(driver, TIMEOUT).until(
         EC.presence_of_element_located((By.ID, "add-question"))
@@ -36,16 +27,30 @@ def create_question(driver):
     add_question.click()
 
     name_input = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, "name-1"))
+        EC.presence_of_element_located((By.ID, f"name-{question_number}"))
     )
-    name_input.send_keys("Pregunta 1")
+    name_input.send_keys(f"Pregunta {question_number}")
+
+    # Ejecuta JavaScript para realizar el scroll hasta el final de la página
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    time.sleep(1)
+
+    input_max_options = WebDriverWait(driver, TIMEOUT).until(
+        EC.presence_of_element_located(
+            (By.ID, f"question-{question_number}-max-answers")
+        )
+    )
+
+    input_max_options.clear()
+    input_max_options.send_keys(f"{select_number}")
 
     # Enviamos los datos para crear
     button_add_option = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, "add-option-1"))
+        EC.presence_of_element_located((By.ID, f"add-option-{question_number}"))
     )
 
-    for i in range(NUM_ANSWERS):
+    for i in range(choices_number):
         # Ejecuta JavaScript para realizar el scroll hasta el final de la página
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
@@ -54,9 +59,25 @@ def create_question(driver):
 
         # Esperamos a la pantalla de inicio
         input_option = WebDriverWait(driver, TIMEOUT).until(
-            EC.presence_of_element_located((By.ID, f"text-option-{i}"))
+            EC.presence_of_element_located(
+                (By.ID, f"question-{question_number}-text-option-{i}")
+            )
         )
         input_option.send_keys(f"Respuesta {i + 1}")
+
+
+def create_question(driver):
+    # Ir a la página web
+    driver.get(f"{URL_ADMIN}/admin/{NAME_ELECTION}/panel")
+
+    # Accedemos a crear preguntas
+    button_create_question = WebDriverWait(driver, TIMEOUT).until(
+        EC.presence_of_element_located((By.ID, "button-add-questions"))
+    )
+    button_create_question.click()
+
+    add_question(driver, 1, 1, 3)
+    add_question(driver, 2, 2, 3)
 
     save_question = WebDriverWait(driver, TIMEOUT).until(
         EC.presence_of_element_located((By.ID, "button-save-questions"))

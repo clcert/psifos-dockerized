@@ -1,19 +1,25 @@
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
+from trustee.login_trustee import login_trustee
+from services.election import get_election
+from selenium import webdriver
+from utils import get_driver_options
+
 from config import (
     NAME_ELECTION,
     TIMEOUT,
     DIRECTORY_PATH,
-    OPERATIVE_URL,
-    TRUSTEE_NAME,
-    TRUSTEE_PASSWORD,
-    LOGIN_SITE
+    TRUSTEE_NAME_1,
+    TRUSTEE_PASSWORD_1,
+    TRUSTEE_NAME_2,
+    TRUSTEE_PASSWORD_2,
+    TRUSTEE_NAME_3,
+    TRUSTEE_PASSWORD_3,
 )
-from services.election import get_election
 
 import time
+import threading
 
 
 def check_key():
@@ -25,29 +31,14 @@ def check_key():
         raise Exception("La clave no ha sido generada con éxito")
 
 
-def key_generator(driver):
-    # Ir a la página web
-    driver.get(f"{OPERATIVE_URL}/{NAME_ELECTION}/trustee/login")
+def trustee_generator_key(trustee_name, trustee_password):
+    options = get_driver_options()
 
-    if LOGIN_SITE == "clcert":
-        username_element_id = "id_username"
-        password_element_id = "id_password"
-    if LOGIN_SITE == "uchile":
-        username_element_id = "usernameInput"
-        password_element_id = "passwordInput"
+    # Abrimos el navegador
+    driver = webdriver.Chrome(options=options)
 
-    # Rellenamos el formulario del custodio
-    trustee_name = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, username_element_id))
-    )
-    trustee_name.send_keys(TRUSTEE_NAME)
+    login_trustee(driver, trustee_name, trustee_password)
 
-    trustee_password = WebDriverWait(driver, TIMEOUT).until(
-        EC.presence_of_element_located((By.ID, password_element_id))
-    )
-    trustee_password.send_keys(TRUSTEE_PASSWORD)
-    trustee_password.send_keys(Keys.ENTER)
-    
     # Accedemos a la etapa 1
     button_key_generator = WebDriverWait(driver, TIMEOUT).until(
         EC.presence_of_element_located((By.ID, "init-key-generator"))
@@ -67,8 +58,33 @@ def key_generator(driver):
         EC.presence_of_element_located((By.ID, "file-input"))
     )
     drop_zone.send_keys(
-        f"{DIRECTORY_PATH}/trustee_key_{TRUSTEE_NAME}_{NAME_ELECTION}.txt"
+        f"{DIRECTORY_PATH}/trustee_key_{trustee_name}_{NAME_ELECTION}.txt"
     )
 
-    time.sleep(20)
+    time.sleep(25)
+
+
+def key_generator():
+    # Crear un objeto Thread
+    trustee_1 = threading.Thread(
+        target=trustee_generator_key, args=(TRUSTEE_NAME_1, TRUSTEE_PASSWORD_1)
+    )
+    trustee_2 = threading.Thread(
+        target=trustee_generator_key, args=(TRUSTEE_NAME_2, TRUSTEE_PASSWORD_2)
+    )
+    trustee_3 = threading.Thread(
+        target=trustee_generator_key, args=(TRUSTEE_NAME_3, TRUSTEE_PASSWORD_3)
+    )
+
+    # Iniciar el hilo
+    trustee_1.start()
+    time.sleep(2)
+    trustee_2.start()
+    time.sleep(2)
+    trustee_3.start()
+
+    # Esperar a que el hilo termine (opcional)
+    trustee_1.join()
+    trustee_2.join()
+    trustee_3.join()
     check_key()
