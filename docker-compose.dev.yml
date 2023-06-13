@@ -26,9 +26,11 @@ services:
       - MYSQL_DATABASE=${DATABASE_NAME}
       - MYSQL_USER=${DATABASE_USER}
       - MYSQL_PASSWORD=${DATABASE_PASS}
+    volumes:
+      - ./custom:/etc/mysql/conf.d
     ports:
       - "3306:3306"
-    
+
   back-op-dev:
     container_name: back-op-dev
     build:
@@ -56,6 +58,7 @@ services:
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
       - TIMEZONE=${TIMEZONE}
+      - TOKEN_ANALYTICS_OP=${TOKEN_ANALYTICS_OP}
     ports:
       - "8000:8000"
     depends_on:
