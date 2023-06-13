@@ -64,6 +64,7 @@ services:
       - DATABASE_PASS=${DATABASE_PASS}
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_HOST=${DATABASE_HOST}
+      - TOKEN_ANALYTICS_INFO=${TOKEN_ANALYTICS_INFO}
     expose:
       - "80"
     networks:
