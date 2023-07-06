@@ -26,11 +26,9 @@ services:
       - MYSQL_DATABASE=${DATABASE_NAME}
       - MYSQL_USER=${DATABASE_USER}
       - MYSQL_PASSWORD=${DATABASE_PASS}
-    volumes:
-      - ./custom:/etc/mysql/conf.d
     ports:
       - "3306:3306"
-
+    
   back-op-dev:
     container_name: back-op-dev
     build:
@@ -56,6 +54,7 @@ services:
       - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
       - OAUTH_USER_INFO_URL=${OAUTH_USER_INFO_URL}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - REDIS_URL=${REDIS_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
       - TIMEZONE=${TIMEZONE}
       - TOKEN_ANALYTICS_OP=${TOKEN_ANALYTICS_OP}
@@ -102,6 +101,7 @@ services:
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_HOST=${DATABASE_HOST}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - REDIS_URL=${REDIS_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
       - MIXNET_01_NAME=${MIXNET_01_NAME}
       - MIXNET_01_URL=${MIXNET_01_URL}
@@ -128,6 +128,7 @@ services:
       - 5556:5555
     environment:
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - REDIS_URL=${REDIS_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
     depends_on:
       - back-op-dev
