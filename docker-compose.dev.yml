@@ -137,42 +137,33 @@ services:
 
   vmn-01:
     container_name: mixserver01
-    build:
-      context: ./vmn-docker
-      dockerfile: Dockerfile.dev
+    build: ./vmn-docker
     environment:
-      - SERVER_NAME=${MIXNET_01_NAME}
-      - MIXNET_WIDTH=${MIXNET_WIDTH}
-      - MIXNET_NUM_SERVERS=${MIXNET_NUM_SERVERS}
+      - MIXSERVER_NAME=${MIXNET_01_NAME}
+      - MIXSERVER_PUBLIC_IP=mixserver01
     ports:
-      - "8002:8000"
+      - "8000"
       - "8040"
       - "4040"
 
   vmn-02:
     container_name: mixserver02
-    build:
-      context: ./vmn-docker
-      dockerfile: Dockerfile.dev
+    build: ./vmn-docker
     environment:
-      - SERVER_NAME=${MIXNET_02_NAME}
-      - MIXNET_WIDTH=${MIXNET_WIDTH}
-      - MIXNET_NUM_SERVERS=${MIXNET_NUM_SERVERS}
+      - MIXSERVER_NAME=${MIXNET_02_NAME}
+      - MIXSERVER_PUBLIC_IP=mixserver02
     ports:
-      - "8003:8000"
+      - "8000"
       - "8040"
       - "4040"
 
   vmn-03:
     container_name: mixserver03
-    build:
-      context: ./vmn-docker
-      dockerfile: Dockerfile.dev
+    build: ./vmn-docker
     environment:
-      - SERVER_NAME=${MIXNET_03_NAME}
-      - MIXNET_WIDTH=${MIXNET_WIDTH}
-      - MIXNET_NUM_SERVERS=${MIXNET_NUM_SERVERS}
+      - MIXSERVER_NAME=${MIXNET_03_NAME}
+      - MIXSERVER_PUBLIC_IP=mixserver03
     ports:
-      - "8004:8000"
+      - "8000"
       - "8040"
       - "4040"
